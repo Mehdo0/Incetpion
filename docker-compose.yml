@@ -1,5 +1,3 @@
-version: '3'
-
 networks:
   inception-net:
     driver: bridge
@@ -10,46 +8,52 @@ volumes:
     driver_opts:
       type: 'none'
       o: 'bind'
-      device: '/home/my-login/data/mariadb'
+      device: '/home/mmouaffa/data/mariadb'  # Corriger le chemin
   wordpress_files:
     driver: local
     driver_opts:
       type: 'none'
       o: 'bind'
-      device: '/home/my-login/data/wordpress'
+      device: '/home/mmouaffa/data/wordpress'  # Corriger le chemin
 
 services:
   mariadb:
     container_name: mariadb
-    build: ./srcs/mariadb
+    build:
+      context: ./srcs
+      dockerfile: mariadb/Dockerfile
     env_file: ./.env
     networks:
       - inception-net
     volumes:
       - db_data:/var/lib/mysql
-    restart: unless-stopped
+    restart: always
 
   wordpress:
     container_name: wordpress
-    build: ./srcs/wordpress
+    build:
+      context: ./srcs
+      dockerfile: wordpress/Dockerfile
     env_file: ./.env
     networks:
       - inception-net
     volumes:
-      - wordpress_files:/var/www/html/wordpress
+      - wordpress_files:/var/www/html/wordpress:z
     depends_on:
       - mariadb
-    restart: unless-stopped
+    restart: always
 
   nginx:
     container_name: nginx
-    build: ./srcs/nginx
+    build:
+      context: ./srcs
+      dockerfile: nginx/Dockerfile
     ports:
       - "443:443"
     networks:
       - inception-net
     volumes:
-      - wordpress_files:/var/www/html/wordpress:ro
+      - wordpress_files:/var/www/html/wordpress:ro,z
     depends_on:
       - wordpress
-    restart: unless-stopped
+    restart: always

@@ -1,11 +1,11 @@
-FROM debian:buster
+FROM debian:bookworm
 
 RUN apt-get update && apt-get install -y nginx openssl
 
-COPY ./conf/nginx.conf /etc/nginx/nginx.conf
+COPY nginx/conf/nginx.conf /etc/nginx/nginx.conf
 
-COPY ./conf/inception.crt /etc/nginx/ssl/inception.crt
+COPY nginx/conf/inception.crt /etc/nginx/ssl/inception.crt
 
-COPY ./conf/inception.key /etc/nginx/ssl/inception.key
+COPY nginx/conf/inception.key /etc/nginx/ssl/inception.key
 
 CMD ["nginx", "-g", "daemon off;"]

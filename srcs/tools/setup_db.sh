@@ -1,6 +1,6 @@
 #!/bin/sh
 
-service mysql start
+service mariadb start
 
 sleep 5
 
